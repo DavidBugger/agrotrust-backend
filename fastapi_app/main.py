@@ -18,7 +18,12 @@ django_asgi_app = get_asgi_application()
 
 from api.models import Profile, FarmerProfile, Role
 
-app = FastAPI(title="Agrotrust API")
+app = FastAPI(
+    title="Agrotrust API",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
+)
 
 # JWT Helper (simplified for V1)
 SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET", "your-secret-key")
