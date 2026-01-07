@@ -10,5 +10,9 @@ services:
         sync: false
       - key: DATABASE_URL
         sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
       - key: PYTHON_VERSION
         value: 3.10.0
