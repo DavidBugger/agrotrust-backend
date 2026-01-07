@@ -60,3 +60,4 @@ uvicorn==0.39.0
 websockets==15.0.1
 yarl==1.22.0
 whitenoise==6.6.0
+gunicorn==21.2.0
