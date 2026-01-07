@@ -3,12 +3,12 @@ import sys
 from pathlib import Path
 import django
 from fastapi import FastAPI, HTTPException, Depends, Header
-from fastapi.responses import RedirectResponse, JSONResponse
-from fastapi.openapi.docs import get_swagger_ui_html
-from fastapi.openapi.utils import get_openapi
 from pydantic import BaseModel
 from typing import Optional, List
 import jwt
+from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
+from fastapi.openapi.utils import get_openapi
 
 # Add the project root to sys.path
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,12 +32,23 @@ app = FastAPI(
 async def custom_swagger_ui_html():
     return get_swagger_ui_html(
         openapi_url="/openapi.json",
-        title="Agrotrust API - Documentation"
+        title="Agrotrust API - Swagger UI"
     )
 
 @app.get("/docs/", include_in_schema=False)
 async def redirect_to_docs():
     return RedirectResponse(url="/docs")
+
+@app.get("/redoc", include_in_schema=False)
+async def custom_redoc_html():
+    return get_redoc_html(
+        openapi_url="/openapi.json",
+        title="Agrotrust API - ReDoc"
+    )
+
+@app.get("/redoc/", include_in_schema=False)
+async def redirect_to_redoc():
+    return RedirectResponse(url="/redoc")
 
 @app.get("/openapi.json", include_in_schema=False)
 async def get_open_api_endpoint():
