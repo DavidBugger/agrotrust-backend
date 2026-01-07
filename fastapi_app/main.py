@@ -3,6 +3,9 @@ import sys
 from pathlib import Path
 import django
 from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.openapi.utils import get_openapi
 from pydantic import BaseModel
 from typing import Optional, List
 import jwt
@@ -20,10 +23,25 @@ from api.models import Profile, FarmerProfile, Role
 
 app = FastAPI(
     title="Agrotrust API",
-    docs_url="/docs",
-    redoc_url="/redoc",
-    openapi_url="/openapi.json"
+    docs_url=None, 
+    redoc_url=None, 
+    openapi_url=None
 )
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui_html():
+    return get_swagger_ui_html(
+        openapi_url="/openapi.json",
+        title="Agrotrust API - Documentation"
+    )
+
+@app.get("/docs/", include_in_schema=False)
+async def redirect_to_docs():
+    return RedirectResponse(url="/docs")
+
+@app.get("/openapi.json", include_in_schema=False)
+async def get_open_api_endpoint():
+    return JSONResponse(get_openapi(title="Agrotrust API", version="1.0.0", routes=app.routes))
 
 # JWT Helper (simplified for V1)
 SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET", "your-secret-key")
