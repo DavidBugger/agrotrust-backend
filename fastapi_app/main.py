@@ -13,7 +13,8 @@ sys.path.append(str(BASE_DIR))
 
 # Configure Django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
-django.setup()
+from django.core.asgi import get_asgi_application
+django_asgi_app = get_asgi_application()
 
 from api.models import Profile, FarmerProfile, Role
 
@@ -308,6 +309,17 @@ def get_admin_dashboard():
         "total_activities": total_activities,
         "trust_distribution": trust_dist
     }
+
+@app.get("/")
+def home():
+    return {
+        "message": "Agrotrust API is running",
+        "api_docs": "/docs",
+        "admin_interface": "/admin"
+    }
+
+# Mount Django as a fallback
+app.mount("/", django_asgi_app)
 
 if __name__ == "__main__":
     import uvicorn
